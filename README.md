@@ -455,6 +455,8 @@ window.a = 1;
 
 这样每个应用都创建一个 `proxy` 来代理 `window`，好处是每个应用都是相对独立，不需要直接更改全局 `window` 属性！
 
-TODO
+## 相关资料
 
-`qiankun` 实战
+- [single-spa 中文文档](https://zh-hans.single-spa.js.org/docs/getting-started-overview)
+
+- [qiankun](https://qiankun.umijs.org/zh)
