@@ -20,60 +20,65 @@
       // 参数：(1)注册应用的名字 (2)加载app的方法必须是返回一个promise的函数
       singleSpa.registerApplication(
         "app1",
-        async () => {
+        async (props) => {
+          // 这个函数需要返回结果
+          console.log("加载时执行1 props", props);
           // 这个函数需要返回三个方法(可以是个数组，内部会自动拍平数组)给主应用调用;
           return {
             // 启动
             bootstrap: [
-              async () => {
-                console.log("app bootstrap");
+              async (props) => {
+                console.log("app bootstrap props", props);
               },
             ],
             // 挂载
-            mount: async () => {
-              console.log("app mount");
+            mount: async (props) => {
+              console.log("app mount props", props);
             },
             // 卸载，有两种情况: (1)完全卸载(UNLOADING) (2)未挂载：UMMOUNTING -> NOT_MOUNTED
-            unmount: async () => {
-              console.log("app unmount");
+            unmount: async (props) => {
+              console.log("app unmount props", props);
             },
           };
         },
         // 匹配函数：根据路径来判断是否应该加载，匹配到了才会加载子应用bundle
-        (location) => location.hash.startsWith("#/app1"),
+        (location) => location.pathname.startsWith("/a"),
         {
           // 给应用传递参数
           store: {
-            name: "james",
-            age: 18,
+            name: "app1",
           },
         }
       );
       singleSpa.registerApplication(
         "app2",
         async (props) => {
-          console.log("加载时执行 props", props);
+          console.log("加载时执行2 props", props);
           return {
             bootstrap: async (props) => {
-              console.log("bootstrap props", props);
+              console.log("app2 bootstrap props", props);
             },
             mount: async (props) => {
-              console.log("mount props", props);
+              console.log("app2 mount props", props);
             },
             unmount: async (props) => {
-              console.log("unmount props", props);
+              console.log("app2 unmount props", props);
             },
           };
         },
-        // 匹配条件
+        // 匹配函数：根据路径来判断是否应该加载，匹配到了才会加载子应用bundle
         (location) => location.pathname.startsWith("/b"),
         {
           store: {
-            name: "james",
-            age: 18,
+            name: "app2",
           },
         }
       );
+      // 输出
+      // 加载时执行2 props {store: {…}}
+      // bootstrap.js:9 toBootstrapPromise app.status NOT_BOOTSTRAPPED
+      // (index):59 app2 bootstrap props {store: {…}}
+      // (index):62 app2 mount props {store: {…}}
       // 启动这个应用
       singleSpa.start();
       // registerApplication: 默认会加载这个应用

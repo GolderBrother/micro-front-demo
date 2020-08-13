@@ -2,11 +2,11 @@
 /* eslint-disable no-unused-vars */
 import { started } from "../start";
 import { getAppChanges } from "../applications/app";
-import "./navigator-event";
 import { toLoadPromise } from "../lifecycles/load";
 import { toUnmountPromise } from "../lifecycles/unmount";
 import { toBootstrapPromise } from "../lifecycles/bootstrap";
 import { toMountPromise } from "../lifecycles/mount";
+import "./navigator-event";
 /**
  * 核心应用处理方法
 // 这个流程是用于初始化操作的，我们还需要 当路径切换时重新加载应用

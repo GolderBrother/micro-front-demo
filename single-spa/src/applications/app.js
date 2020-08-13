@@ -27,6 +27,7 @@ export function registerApplication(appName, loadApp, activeWhen, customProps) {
     customProps,
     status: NOT_LOADED,
   });
+  console.log('registerApplication apps', apps);
   // 需要加载应用
   reroute();
 }
