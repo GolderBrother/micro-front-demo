@@ -1,0 +1,16 @@
+{
+  "name": "handwrite-micro-front",
+  "version": "1.0.0",
+  "description": "视频：\r https://pc-shop.xiaoe-tech.com/appF96umJwe7950/video_details?id=v_5f22979de4b066aed6bc24ea",
+  "main": "index.js",
+  "scripts": {
+    "dev": "rollup -c -w"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "rollup": "^2.23.1",
+    "rollup-plugin-serve": "^1.0.3"
+  }
+}
