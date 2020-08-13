@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <p>child-vue</p>
+      <div id="box"></div>
+    </div>
+    <script>
+      // 父应用和子应用的style隔离（真正意义上的隔离）
+      // shadow dom: 影子DOM，这个是dom的原生api
+      const shadowDOM = document.getElementById("box").attachShadow({
+        // 外界无法访问 shadow dom
+        mode: "closed",
+      });
+      const pElm = document.createElement("p");
+      pElm.innerHTML = "hello james";
+      const styleElm = document.createElement("style");
+      styleElm.textContent = `
+        p {
+          color: red;
+        }
+      `;
+      // 然后放到shadowDOM中才能生效
+      shadowDOM.appendChild(styleElm);
+      shadowDOM.appendChild(pElm);
+    </script>
+  </body>
+</html>

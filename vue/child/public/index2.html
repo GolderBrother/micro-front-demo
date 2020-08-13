@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // JS沙箱
+      // 如果应用 加载 刚开始我加载A应用 window.a  B应用 (window.a);
+      // 单应用切换 沙箱 创造一个干净的环境给这个子应用使用，当切换时 可以选择丢弃属性和恢复属性
+      // JS沙箱 可以使用 proxy，但是兼容性不好
+      // 快照沙箱  1年前拍一张  再拍一张  （将区别保存起来） 在回到一年前（将区别再导进来）
+
+      class SnapshotSandbox {
+        constructor() {
+          this.proxy = window; // window属性
+          this.modifyPropsMap = {}; // 记录在window上的修改
+          this.active();
+        }
+        // 激活状态
+        active() {
+          // 快照(拍照)
+          this.windowSnapshot = {};
+          for (const prop in window) {
+            // 说明属性有变更
+            if (window.hasOwnProperty(prop)) {
+              this.windowSnapshot[prop] = window[prop];
+            }
+          }
+          Object.keys(this.modifyPropsMap).forEach((prop) => {
+            window[prop] = this.modifyPropsMap[prop];
+          });
+        }
+        // 失活状态
+        inactive() {
+          for (const prop in window) {
+            if (window.hasOwnProperty(prop)) {
+              //说明 属性变化了(现在 !== 一年前)
+              if (window[prop] !== this.windowSnapshot[prop]) {
+                // 更新变更的属性
+                this.modifyPropsMap[prop] = window[prop];
+                window[prop] = this.windowSnapshot[prop];
+              }
+            }
+          }
+        }
+      }
+      const sandbox = new SnapshotSandbox();
+      // 沙箱: 应用的运行 从开始到结束 ，切换后不会影响全局
+      ((window) => {
+        window.a = 1;
+        window.b = 2;
+        console.log(window.a, window.b);
+        sandbox.inactive();
+        console.log(window.a, window.b);
+        sandbox.active();
+        console.log(window.a, window.b);
+      })(sandbox.proxy); // sandbox.proxy就是window
+      // 1 2
+      // undefined undefined
+      // 1 2
+      // 如果是多个子应用就不能使用这种方式了，多子应用就可以使用es6的proxy
+      // 代理沙箱可以实现多应用沙箱。就是把不同的应用 用不同的代理来处理
+    </script>
+  </body>
+</html>
