@@ -7,14 +7,15 @@
   /* eslint-disable prettier/prettier */
   // 描述应用的整个状态
 
-  const NOT_LOADED = "NOT_LOADED"; // 应用初始状态
+  const NOT_LOADED = "NOT_LOADED"; // 没有加载过(应用初始状态)
   const LOADING_SOURCE_CODE = "LOADING_SOURCE_CODE"; // 加载资源
-  const NOT_BOOTSTRAPPED = "NOT_BOOTSTRAPPED"; // 还没有调用bootstrap方法
-  const BOOTSTRAPPING = "BOOTSTRAPPING"; // 启用ing
-  const NOT_MOUNTED = "NOT_MOUNTED"; // 没有调用mount方法
-  const MOUNTING = "MOUNTING"; // 正在挂载中
+  const NOT_BOOTSTRAPPED = "NOT_BOOTSTRAPPED"; // 没有启动(还没有调用bootstrap方法)
+  const BOOTSTRAPPING = "BOOTSTRAPPING"; // 启动中
+  const NOT_MOUNTED = "NOT_MOUNTED"; // 没有挂载(没有调用mount方法)
+  const MOUNTING = "MOUNTING"; // 挂载中
   const MOUNTED = "MOUNTED"; // 挂载完毕
-  const UNMOUNTING = "UNMOUNTING"; // 解除挂载中
+  const UNMOUNTING = "UNMOUNTING"; // 解除挂载中(卸载中)
+  const SKIP_BECAUSE_BROKEN = "SKIP_BECAUSE_BROKEN"; // 运行出错
 
   // 当前这个应用是否要被激活
   // 如果返回true，那么应用应该就开始初始化等一系列操作
@@ -254,7 +255,7 @@
       customProps,
       status: NOT_LOADED,
     });
-    console.log('registerApplication apps', apps);
+    console.log("registerApplication apps", apps);
     // 需要加载应用
     reroute();
   }
@@ -267,7 +268,7 @@
     const appsToUnmount = [];
     apps.forEach((app) => {
       // 需不需要被加载
-      const appShouldBeActive = shouldBeActive(app);
+      const appShouldBeActive = app.status !== SKIP_BECAUSE_BROKEN && shouldBeActive(app);
       switch (app.status) {
         // 这些状态的，就需要被加载
         case NOT_LOADED:
@@ -287,7 +288,7 @@
         // 需要被卸载
         case MOUNTED:
           // 当前这个应用不需要被激活才能卸载
-          if(!appShouldBeActive) {
+          if (!appShouldBeActive) {
             appsToUnmount.push(app);
           }
           break;

@@ -6,6 +6,7 @@ import {
   BOOTSTRAPPING,
   MOUNTED,
   NOT_MOUNTED,
+  SKIP_BECAUSE_BROKEN,
   shouldBeActive,
 } from "./app.helpers.js";
 import { reroute } from "../navigations/reroutes.js";
@@ -27,7 +28,7 @@ export function registerApplication(appName, loadApp, activeWhen, customProps) {
     customProps,
     status: NOT_LOADED,
   });
-  console.log('registerApplication apps', apps);
+  console.log("registerApplication apps", apps);
   // 需要加载应用
   reroute();
 }
@@ -40,7 +41,7 @@ export function getAppChanges() {
   const appsToUnmount = [];
   apps.forEach((app) => {
     // 需不需要被加载
-    const appShouldBeActive = shouldBeActive(app);
+    const appShouldBeActive = app.status !== SKIP_BECAUSE_BROKEN && shouldBeActive(app);
     switch (app.status) {
       // 这些状态的，就需要被加载
       case NOT_LOADED:
@@ -60,7 +61,7 @@ export function getAppChanges() {
       // 需要被卸载
       case MOUNTED:
         // 当前这个应用不需要被激活才能卸载
-        if(!appShouldBeActive) {
+        if (!appShouldBeActive) {
           appsToUnmount.push(app);
         }
         break;

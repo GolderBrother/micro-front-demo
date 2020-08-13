@@ -1,5 +1,6 @@
 import serve from "rollup-plugin-serve";
 export default {
+  // 入口文件
   input: "./src/single-spa.js",
   output: {
     // 输出的文件位置和名称
